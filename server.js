@@ -111,15 +111,15 @@ app.post("/vehicles", async (req, res) => {
 // Create a service booking
 app.post("/bookings", async (req, res) => {
     try {
-        const { email, vehicleNumber, service, date, time } = req.body;
-
+        const { customerName, email, vehicleNumber, service, date, time } = req.body;
         const newBooking = new Booking({
-            email,
-            vehicleNumber,
-            service,
-            date,
-            time
-        });
+    customerName,
+    email,
+    vehicleNumber,
+    service,
+    date,
+    time
+});
 
         await newBooking.save();
 

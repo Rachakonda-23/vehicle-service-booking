@@ -1,12 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Admin Dashboard</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -45,33 +44,49 @@
                     document.getElementById("bookingTable");
 
 
+                // Display each booking
                 bookings.forEach(function (booking) {
 
                     const row = table.insertRow();
 
-                    row.insertCell(0).innerText =
-                        booking.email;
 
+                    // Customer name
+                    row.insertCell(0).innerText =
+                        booking.customerName;
+
+
+                    // Vehicle number
                     row.insertCell(1).innerText =
                         booking.vehicleNumber;
 
+
+                    // Service
                     row.insertCell(2).innerText =
                         booking.service;
 
+
+                    // Date
                     row.insertCell(3).innerText =
                         booking.date;
 
+
+                    // Time
                     row.insertCell(4).innerText =
                         booking.time;
 
+
+                    // Status
                     row.insertCell(5).innerText =
                         booking.status;
 
 
+                    // Action cell
                     const actionCell = row.insertCell(6);
 
 
-                    const select = document.createElement("select");
+                    // Status dropdown
+                    const select =
+                        document.createElement("select");
 
                     select.innerHTML = `
                         <option value="Pending">Pending</option>
@@ -83,7 +98,9 @@
                     select.value = booking.status;
 
 
-                    const button = document.createElement("button");
+                    // Update button
+                    const button =
+                        document.createElement("button");
 
                     button.innerText = "Update";
 
@@ -109,13 +126,17 @@
                         );
 
 
-                        const data = await response.json();
+                        const data =
+                            await response.json();
 
                         alert(data.message);
 
 
                         if (response.ok) {
-                            row.cells[5].innerText = newStatus;
+
+                            row.cells[5].innerText =
+                                newStatus;
+
                         }
 
                     };
@@ -129,13 +150,17 @@
 
             } catch (error) {
 
-                console.log("Error loading bookings:", error);
+                console.log(
+                    "Error loading bookings:",
+                    error
+                );
 
             }
 
         }
 
 
+        // Load bookings when page opens
         loadBookings();
 
     </script>
@@ -143,3 +168,4 @@
 </body>
 
 </html>
+```
