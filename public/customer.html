@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>Customer Dashboard</h1>
+
+
+    <!-- Vehicle Details -->
+    <h2>Vehicle Details</h2>
+
+    <label>Vehicle Number:</label><br>
+
+    <input
+        type="text"
+        id="vehicleNumber"
+        placeholder="Enter vehicle number"
+    >
+
+    <br><br>
+
+
+    <label>Vehicle Model:</label><br>
+
+    <input
+        type="text"
+        id="vehicleModel"
+        placeholder="Enter vehicle model"
+    >
+
+    <br><br>
+
+
+    <label>Vehicle Type:</label><br>
+
+    <select id="vehicleType">
+        <option value="Car">Car</option>
+        <option value="Bike">Bike</option>
+        <option value="Scooter">Scooter</option>
+        <option value="Other">Other</option>
+    </select>
+
+    <br><br>
+
+
+    <button type="button" onclick="addVehicle()">
+        Add Vehicle
+    </button>
+
+
+    <hr>
+
+
+    <!-- Book Service -->
+    <h2>Book a Service</h2>
+
+    <label>Service:</label><br>
+
+    <select id="service">
+
+        <option value="Oil Change">
+            Oil Change
+        </option>
+
+        <option value="General Service">
+            General Service
+        </option>
+
+        <option value="Engine Service">
+            Engine Service
+        </option>
+
+        <option value="Brake Service">
+            Brake Service
+        </option>
+
+        <option value="AC Service">
+            AC Service
+        </option>
+
+    </select>
+
+    <br><br>
+
+
+    <label>Date:</label><br>
+
+    <input
+        type="date"
+        id="serviceDate"
+    >
+
+    <br><br>
+
+
+    <label>Time:</label><br>
+
+    <input
+        type="time"
+        id="serviceTime"
+    >
+
+    <br><br>
+
+
+    <button type="button" onclick="bookService()">
+        Book Service
+    </button>
+
+
+    <hr>
+
+
+    <!-- My Bookings -->
+<h2>My Bookings</h2>
+
+<table border="1" width="100%" id="myBookingsTable">
+
+    <tr>
+        <th>Vehicle</th>
+        <th>Service</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Status</th>
+    </tr>
+
+</table>
+
+
+    <!-- JavaScript -->
+    <script>
+
+        // Add Vehicle
+        async function addVehicle() {
+
+            const vehicleNumber =
+                document.getElementById("vehicleNumber").value.trim();
+
+            const vehicleModel =
+                document.getElementById("vehicleModel").value.trim();
+
+            const vehicleType =
+                document.getElementById("vehicleType").value;
+
+
+            if (vehicleNumber === "" || vehicleModel === "") {
+
+                alert("Please enter vehicle number and vehicle model.");
+
+                return;
+            }
+
+
+            try {
+
+                const response = await fetch("/vehicles", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        vehicleNumber: vehicleNumber,
+
+                        vehicleModel: vehicleModel,
+
+                        vehicleType: vehicleType,
+
+                        email: "asritha@test.com"
+
+                    })
+
+                });
+
+
+                const data = await response.json();
+
+                alert(data.message);
+
+
+                if (response.ok) {
+
+                    document.getElementById("vehicleNumber").value = "";
+
+                    document.getElementById("vehicleModel").value = "";
+
+                }
+
+
+            } catch (error) {
+
+                console.log("Vehicle error:", error);
+
+                alert("Unable to connect to the server.");
+
+            }
+
+        }
+
+
+        // Book Service
+        async function bookService() {
+
+            const vehicleNumber =
+                document.getElementById("vehicleNumber").value.trim();
+
+            const service =
+                document.getElementById("service").value;
+
+            const date =
+                document.getElementById("serviceDate").value;
+
+            const time =
+                document.getElementById("serviceTime").value;
+
+
+            if (vehicleNumber === "") {
+
+                alert("Please enter the vehicle number.");
+
+                return;
+            }
+
+
+            if (date === "") {
+
+                alert("Please select a service date.");
+
+                return;
+            }
+
+
+            if (time === "") {
+
+                alert("Please select a service time.");
+
+                return;
+            }
+
+
+            try {
+
+                const response = await fetch("/bookings", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        email: "asritha@test.com",
+
+                        vehicleNumber: vehicleNumber,
+
+                        service: service,
+
+                        date: date,
+
+                        time: time
+
+                    })
+
+                });
+
+
+                const data = await response.json();
+
+                alert(data.message);
+
+
+                if (response.ok) {
+
+                    document.getElementById("serviceDate").value = "";
+
+                    document.getElementById("serviceTime").value = "";
+
+                }
+
+
+            } catch (error) {
+
+                console.log("Booking error:", error);
+
+                alert("Unable to connect to the server.");
+
+            }
+
+        }
+
+                // Load customer bookings
+        async function loadMyBookings() {
+
+            try {
+
+                const response = await fetch("/bookings");
+
+                const bookings = await response.json();
+
+                const table =
+                    document.getElementById("myBookingsTable");
+
+
+                bookings
+                    .filter(booking => booking.email === "asritha@test.com")
+                    .forEach(function (booking) {
+
+                        const row = table.insertRow();
+
+                        row.insertCell(0).innerText =
+                            booking.vehicleNumber;
+
+                        row.insertCell(1).innerText =
+                            booking.service;
+
+                        row.insertCell(2).innerText =
+                            booking.date;
+
+                        row.insertCell(3).innerText =
+                            booking.time;
+
+                        row.insertCell(4).innerText =
+                            booking.status;
+
+                    });
+
+            } catch (error) {
+
+                console.log("Error loading bookings:", error);
+
+            }
+
+        }
+
+
+        loadMyBookings();
+
+    </script>
+
+</body>
+
+</html>

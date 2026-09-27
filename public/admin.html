@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>Admin Dashboard</h1>
+
+    <h2>Service Bookings</h2>
+
+    <table border="1" width="100%" id="bookingTable">
+
+        <tr>
+            <th>Customer</th>
+            <th>Vehicle</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+
+    </table>
+
+
+    <script>
+
+        async function loadBookings() {
+
+            try {
+
+                const response = await fetch("/bookings");
+
+                const bookings = await response.json();
+
+                const table =
+                    document.getElementById("bookingTable");
+
+
+                bookings.forEach(function (booking) {
+
+                    const row = table.insertRow();
+
+                    row.insertCell(0).innerText =
+                        booking.email;
+
+                    row.insertCell(1).innerText =
+                        booking.vehicleNumber;
+
+                    row.insertCell(2).innerText =
+                        booking.service;
+
+                    row.insertCell(3).innerText =
+                        booking.date;
+
+                    row.insertCell(4).innerText =
+                        booking.time;
+
+                    row.insertCell(5).innerText =
+                        booking.status;
+
+
+                    const actionCell = row.insertCell(6);
+
+
+                    const select = document.createElement("select");
+
+                    select.innerHTML = `
+                        <option value="Pending">Pending</option>
+                        <option value="Confirmed">Confirmed</option>
+                        <option value="In Service">In Service</option>
+                        <option value="Completed">Completed</option>
+                    `;
+
+                    select.value = booking.status;
+
+
+                    const button = document.createElement("button");
+
+                    button.innerText = "Update";
+
+
+                    button.onclick = async function () {
+
+                        const newStatus = select.value;
+
+
+                        const response = await fetch(
+                            `/bookings/${booking._id}/status`,
+                            {
+                                method: "PUT",
+
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+
+                                body: JSON.stringify({
+                                    status: newStatus
+                                })
+                            }
+                        );
+
+
+                        const data = await response.json();
+
+                        alert(data.message);
+
+
+                        if (response.ok) {
+                            row.cells[5].innerText = newStatus;
+                        }
+
+                    };
+
+
+                    actionCell.appendChild(select);
+
+                    actionCell.appendChild(button);
+
+                });
+
+            } catch (error) {
+
+                console.log("Error loading bookings:", error);
+
+            }
+
+        }
+
+
+        loadBookings();
+
+    </script>
+
+</body>
+
+</html>
