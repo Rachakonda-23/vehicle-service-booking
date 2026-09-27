@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Connect to MongoDB
-mongoose.connect("mongodb://127.0.0.1:27017/vehicleServiceDB")
+mongoose.connect("mongodb://host.docker.internal:27017/vehicleServiceDB")
     .then(() => {
         console.log("MongoDB connected successfully");
     })
